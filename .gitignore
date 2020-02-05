@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.project
+.pydevproject
+.settings
+__pycache__
+*.pyc
+
+

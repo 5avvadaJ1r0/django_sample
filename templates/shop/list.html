@@ -1,0 +1,58 @@
+{% extends "../common/base.html" %}
+
+{% block content %}
+<h1 class="text-center ">店舗一覧</h1>
+<p class="text-right"><a href="{% url 'shop:create' %}">店舗登録</a></p>
+<div class="container mt-3 pt-3">
+{% for shop in shop_list %}
+  <div class="row">
+    <div class="col-md-10 offset-md-1">
+      <div class="media">
+        <a class="media-left" href="{% url 'shop:detail' shop.id %}">
+          <img class="media-object" src="https://tblg.k-img.com/restaurant/images/Rvw/107648/107648634.jpg" width="100">
+       </a>
+        <div class="media-body ml-3 pl-3">
+          <h5 class="media-heading"><a href="{% url 'shop:detail' shop.id %}">{{ shop.name }}（{{ shop.name_kana }}）</a></h5>
+          <div>〒{{ shop.zip_code.id }} {{ shop.zip_code.prefecture.name }}{{ shop.zip_code.city }}{{ shop.address1 }}{{ shop.address2 }}  TEL:{{ shop.tel }}</div>
+          <div class="small mt-3" style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;text-overflow:ellipsis; width:100%;height:96px;">{{ shop.description }}</div>
+          <div class="text-right"><a href="{% url 'shop:detail' shop.id %}">詳細</a> | <a href="{% url 'shop:update' shop.id %}">編集</a> | <a href="{% url 'shop:image' shop.id %}">画像一覧</a> | <a href="#" class="delete" shop-id="{{ shop.id }}">削除</a></div>
+        </div>
+      </div>
+      <hr />
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<script>
+$(function() {
+    $('.delete').click(function(e) {
+      if (window.confirm("削除しますか？")) {
+        const shop_id = $(this).attr('shop-id');
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+          }
+        });
+
+        $.ajax({
+          url: '/shops/delete/' + shop_id,
+          method: 'DELETE',
+          data: {shop_id:shop_id},
+          contentType: 'application/json',
+          success: function(result) {
+          },
+          error: function(request,msg,error) {
+            console.log(msg);
+          }
+        });
+      }
+    });
+});
+</script>
+
+{% endblock %}

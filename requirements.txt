@@ -1,0 +1,7 @@
+django
+django-cleanup
+django-environ
+djangorestframework
+django-filter
+mysqlclient~=1.4.6
+pillow

@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: django_sample
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: sample
+      MYSQL_PASSWORD: sample
+      TZ: 'Asia/Tokyo'
+    ports:
+      - 3306:3306
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/src
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    links:
+      - db
+    entrypoint:
+      - dockerize
+      - -timeout
+      - 30s
+      - -wait
+      - tcp://db:3306

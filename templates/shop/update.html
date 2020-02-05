@@ -1,0 +1,103 @@
+{% extends "../common/base.html" %}
+
+{% block content %}
+<h1 class="text-center ">店舗編集</h1>
+
+<form method="POST">
+  <div class="container  mt-3 pt-3">
+    <div class="row form-group">
+    <div class="col-md-2 offset-md-3">店舗名</div>
+    <div class="col-md-6">{{ form.name }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">店舗名（カナ）</div>
+      <div class="col-md-6">{{ form.name_kana }}
+      {% if form.name_kana.errors %}
+        {% for error in form.name_kana.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">郵便番号</div>
+      <div class="col-md-6">{{ form.zip_code }}
+      {% if form.zip_code.errors %}
+        {% for error in form.zip_code.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">都道府県</div>
+      <div class="col-md-6">{{ form.prefecture }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">市区町村</div>
+      <div class="col-md-6">{{ form.city }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">番地・丁目</div>
+      <div class="col-md-6">{{ form.address1 }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">建物名・部屋番号</div>
+      <div class="col-md-6">{{ form.address2 }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">電話番号</div>
+      <div class="col-md-6">{{ form.tel }}
+      {% if form.tel.errors %}
+        {% for error in form.tel.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">メールアドレス</div>
+      <div class="col-md-6">{{ form.email }}
+      {% if form.email.errors %}
+        {% for error in form.email.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">店舗URL</div>
+      <div class="col-md-6">{{ form.url }}
+      {% if form.url.errors %}
+        {% for error in form.url.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-3">説明</div>
+      <div class="col-md-6">{{ form.description }}</div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2 offset-md-5">
+        <input class="btn btn-info" type="button" value="　キャンセル　" id="cancel" />
+      </div>
+      <div class="col-md-2">
+        <input class="btn btn-primary" type="submit" value="　　更新　　" />
+      </div>
+    </div>
+    {{ form.id }}
+    {% csrf_token %}
+  </div>
+</form>
+
+<script>
+$(function() {
+    $('#cancel').click(function(e) {
+      window.location.href = "{% url 'shop:list' %}";
+    });
+});
+</script>
+
+{% endblock %}

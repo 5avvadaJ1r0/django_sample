@@ -1,0 +1,24 @@
+{% extends "../common/base.html" %}
+
+{% block content %}
+<h1 class="text-center ">店舗画像一覧</h1>
+<p class="text-right"><a href="{% url 'shop:create' %}">画像登録</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
+<div class="container">
+
+<div id="app">
+  ${message}
+</div>
+
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  delimiters: ["${", "}"],
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>
+
+{% endblock %}

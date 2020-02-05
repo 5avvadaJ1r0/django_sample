@@ -1,0 +1,53 @@
+{% extends "../common/base.html" %}
+
+{% block content %}
+
+<h1 class="text-center ">店舗詳細</h1>
+<p class="text-right"><a href="{% url 'shop:update' shop.id %}">店舗編集</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
+<div class="container mt-3 pt-3">
+    <div class="row m-1">
+    <div class="col-md-2 offset-md-3">店舗名</div>
+    <div class="col-md-6">{{ shop.name }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">店舗名（カナ）</div>
+      <div class="col-md-6">{{ shop.name_kana }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">郵便番号</div>
+      <div class="col-md-6">{{ shop.zip_code.id }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">都道府県</div>
+      <div class="col-md-6">{{ shop.prefecture.name }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">市区町村</div>
+      <div class="col-md-6">{{ shop.city }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">番地・丁目</div>
+      <div class="col-md-6">{{ shop.address1 }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">建物名・部屋番号</div>
+      <div class="col-md-6">{{ shop.address2 }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">電話番号</div>
+      <div class="col-md-6">{{ shop.tel }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">メールアドレス</div>
+      <div class="col-md-6">{{ shop.email }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">店舗URL</div>
+      <div class="col-md-6">{{ shop.url }}</div>
+    </div>
+    <div class="row m-1">
+      <div class="col-md-2 offset-md-3">説明</div>
+      <div class="col-md-6">{{ shop.description }}</div>
+    </div>
+</div>
+{% endblock %}
