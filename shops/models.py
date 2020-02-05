@@ -49,4 +49,3 @@ class ShopImage(models.Model):
 
     class Meta:
         db_table = 'shop_image'
-

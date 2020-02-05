@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views
+
 from shops.views import ShopViewSet
+
+from . import views
 
 app_name = 'shop'
 

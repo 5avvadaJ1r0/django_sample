@@ -1,10 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render
-from django.views import generic
-from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views import generic
 
 from .forms import LoginForm
 
@@ -22,6 +21,3 @@ class CustomLoginView(LoginView):
             return redirect('shop:list')
         else:
             return super().dispatch(request, *args, **kwargs)
-
-
-

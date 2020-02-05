@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import environ
 import os
+
+import environ
 
 env = environ.Env()
 
@@ -131,4 +132,3 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = '/shops/'
 LOGOUT_REDIRECT_URL = '/'
-
