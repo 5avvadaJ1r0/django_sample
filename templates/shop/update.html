@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1 class="text-center ">店舗編集</h1>
+<p class="text-right"><a href="{% url 'shop:detail' shop.id %}">店舗詳細</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
 
 <form method="POST">
   <div class="container  mt-3 pt-3">

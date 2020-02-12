@@ -2,23 +2,119 @@
 
 {% block content %}
 <h1 class="text-center ">店舗画像一覧</h1>
-<p class="text-right"><a href="{% url 'shop:create' %}">画像登録</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
+<p class="text-right"><a href="{% url 'shop:detail' shop.id %}">店舗詳細</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
+
+
 <div class="container">
-
-<div id="app">
-  ${message}
+  <input type="file">
+  <div class="thumbnails pl-1">
+  {% for image in image_list  %}
+    {% if forloop.counter0|divisibleby:"4" %}
+    <div class="row">
+    {% endif %}
+    <div class="md-col-3 m-2">
+      <div style="float:left;">並び順：<input class="image-order" shop-image-id="{{ image.id }}" type="text" value="{{ image.order }}" name="image_order[]" style="text-align:center; width:30px;"></div>
+      <div class="text-right image-remove" shop-image-id="{{ image.id }}"><a href="#"><i class="fa fa-trash" aria-hidden="true"></i></a></div>
+      <img class="m-1" src="{{ image.image.url }}" width="206">
+    </div>
+    {% if forloop.counter|divisibleby:"4" %}
+    </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+  <p class="text-center m-3 p-3"><button class="btn btn-primary update-order">並び順を更新する</button></p>
 </div>
 
-</div>
 
 <script>
-var app = new Vue({
-  el: '#app',
-  delimiters: ["${", "}"],
-  data: {
-    message: 'Hello Vue!'
-  }
-})
+$(function() {
+  const inputElement = document.querySelector('input[type="file"]');
+  const pond = FilePond.create( inputElement );
+  const csrftoken = getCookie('csrftoken');
+
+  pond.setOptions({
+    server: {
+      fetch: null,
+      load: null,
+      process: (fieldName, file, metadata, load, error, progress, abort) => {
+        onload: var doLoad = (function() {
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            $.ajax({
+              url: "{% url 'shop:image_upload' shop.id %}",
+              type: "POST",
+              contentType: "application/json; charset=utf-8", 
+              data: JSON.stringify({
+                'filename':file.name,
+                'mimetype':file.type,
+                'content': window.btoa(reader.result)
+              }),
+              dataType: 'JSON',
+              xhrFields: {withCredentials: false},
+              headers: {'X-CSRFToken': csrftoken},
+              success: function (data, dataType) {
+                pond.removeFiles();
+                window.location.reload(true);
+                alert("ファイルアップロードが完了しました");
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                pond.removeFiles();
+                alert("ファイルアップロードが失敗しました");
+              }
+            });
+            progress(true, file.size, file.size);
+          }
+          reader.readAsBinaryString(file);
+        })();
+      }
+    }
+  });
+
+  $('.image-remove').click(function(e) {
+    if (!confirm("画像を削除しますか？")) {
+      return false;
+    }
+    const shop_imege_id = $(this).attr("shop-image-id");
+    $.ajax({
+      url: "/shops/image/thumbnail/remove/" + shop_imege_id + "/",
+      type: "DELETE",
+      contentType: "application/json; charset=utf-8", 
+      dataType: 'JSON',
+      xhrFields: {withCredentials: false},
+      headers: {'X-CSRFToken': csrftoken},
+      success: function (data, dataType) {
+        window.location.reload(true);
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      }
+    });
+    return false;
+  });
+
+  $('.update-order').click(function(e) {
+    var data = [];
+    $('.image-order').each(function(i, v) {
+      data.push({'id':$(v).attr("shop-image-id"), 'order':$(v).val()});
+    });
+    data = JSON.stringify(data);
+    $.ajax({
+      url: "{% url 'shop:image_order' shop.id %}",
+      type: "POST",
+      contentType: "application/json; charset=utf-8", 
+      dataType: 'JSON',
+      data: data,
+      xhrFields: {withCredentials: false},
+      headers: {'X-CSRFToken': csrftoken},
+      success: function (data, dataType) {
+        window.location.reload(true);
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest)
+      }
+    });
+    return false;
+  });
+});
 </script>
 
 {% endblock %}

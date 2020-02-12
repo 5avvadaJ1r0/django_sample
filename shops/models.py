@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.utils import timezone
 
@@ -40,12 +41,13 @@ class Shop(models.Model):
 
 
 class ShopImage(models.Model):
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="shop_image")
+    title = models.CharField(max_length=1024)
     image = models.ImageField(upload_to='images/')
+    order = models.IntegerField(default=1)
     created = models.DateTimeField(default=timezone.now)
-    updated = models.DateTimeField()
-    deleted = models.DateTimeField()
+    updated = models.DateTimeField(null=True, blank=True)
+    deleted = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         db_table = 'shop_image'

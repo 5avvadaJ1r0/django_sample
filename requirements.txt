@@ -1,6 +1,7 @@
 django
 django-cleanup
 django-environ
+django-imagekit
 djangorestframework
 django-filter
 mysqlclient~=1.4.6

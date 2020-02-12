@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 from pprint import pprint
 
@@ -37,27 +38,31 @@ class ShopBaseForm(forms.Form):
 
     def clean_name_kana(self):
         name_kana = self.cleaned_data['name_kana']
-        pattern = re.compile(r'[\u30A1-\u30F4]+')
-        if not pattern.fullmatch(name_kana):
-            raise forms.ValidationError('店舗名（カナ）はカタカナを入力してください')
+        if name_kana:
+            pattern = re.compile(r'[\u30A1-\u30F4]+')
+            if not pattern.fullmatch(name_kana):
+                raise forms.ValidationError('店舗名（カナ）はカタカナを入力してください')
         return name_kana
 
     def clean_tel(self):
         tel = self.cleaned_data['tel']
         tel = tel.replace('-', '')
-        pattern = re.compile(r'\d{10,11}$')
-        if not pattern.fullmatch(tel):
-            raise forms.ValidationError('電話番号は半角数字を入力してください')
+        if tel:
+            pattern = re.compile(r'\d{10,11}$')
+            if not pattern.fullmatch(tel):
+                raise forms.ValidationError('電話番号は半角数字を入力してください')
         return tel
 
     def clean_email(self):
-        validator = EmailValidator()
-        validator(self.cleaned_data['email'])
+        if self.cleaned_data['email']:
+            validator = EmailValidator()
+            validator(self.cleaned_data['email'])
         return self.cleaned_data['email']
 
     def clean_url(self):
-        validator = URLValidator()
-        validator(self.cleaned_data['url'])
+        if self.cleaned_data['url']:
+            validator = URLValidator()
+            validator(self.cleaned_data['url'])
         return self.cleaned_data['url']
 
 class ShopCreateForm(ShopBaseForm):
