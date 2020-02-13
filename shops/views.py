@@ -5,16 +5,17 @@ import os
 import uuid
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files import File
 from django.core.files.base import ContentFile
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import (DetailView, FormView, ListView, TemplateView,
-                                  UpdateView)
-
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
+
+from apps.settings import MEDIA_ROOT, MEDIA_URL
 from shops.forms import ShopCreateForm, ShopUpdateForm
 from shops.models import Shop, ShopImage
 from shops.serializers import ShopImageSerializer
@@ -83,6 +84,7 @@ class ShopDetailView(LoginRequiredMixin, DetailView):
     template_name = 'shop/detail.html'
     model = Shop
 
+
 class ShopImageView(LoginRequiredMixin, TemplateView):
     template_name = 'shop/image.html'
 
@@ -90,9 +92,13 @@ class ShopImageView(LoginRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         shop = get_object_or_404(Shop, pk=self.kwargs.get('pk'))
         ctx['shop'] = shop
-        ctx['image_list'] = ShopImage.objects.filter(shop=shop, deleted__isnull=True).order_by('order', 'id')
+        ctx['image_list'] = ShopImage.objects.filter(
+            shop=shop,
+            deleted__isnull=True
+            ).order_by('order', 'id')
         return ctx
-    
+
+
 class ShopViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
@@ -104,6 +110,7 @@ class ShopViewSet(viewsets.ViewSet):
             return Response(status=403, data=[])
 
         return Response(status=200, data=[])
+
 
 class ShopImageViewSet(viewsets.ViewSet):
 
@@ -126,12 +133,14 @@ class ShopImageViewSet(viewsets.ViewSet):
 
     def create(self, request, pk=None):
         mimetypes = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']
-        if  request.data['mimetype'] not in mimetypes:
+        if request.data['mimetype'] not in mimetypes:
             raise Http404
 
         filename = self._create_image_filename(request.data['filename'])
         request.data['title'] = request.data['filename']
-        request.data['image'] = ContentFile(base64.b64decode(request.data['content']), name=filename)
+        request.data['image'] = ContentFile(base64.b64decode(
+                                            request.data['content']),
+                                            name=filename)
         request.data['shop'] = Shop.objects.get(pk=pk)
         serializer = ShopImageSerializer()
         instance = serializer.create(validated_data=request.data)
@@ -141,10 +150,21 @@ class ShopImageViewSet(viewsets.ViewSet):
     def list(self, request, pk=None):
         shop = get_object_or_404(Shop, pk=pk)
         rows = ShopImage.objects.filter(shop=shop, deleted__isnull=True)
-        return Response(status=200, data=[ row.id for row in rows])
+        return Response(status=200, data=[row.id for row in rows])
 
     def retrieve(self, request, pk=None):
-        return Response(status=200, data=[])
+        no_image_path = MEDIA_ROOT + '/images/' + 'm_e_others_501.png'
+        try:
+            shop = Shop.objects.get(pk=pk)
+            image = ShopImage.objects.filter(shop=shop, deleted__isnull=True).order_by('order')[:1]
+            image = image.get()
+            image_path = MEDIA_ROOT + '/' + image.image.url.replace(MEDIA_URL, '')
+        except Shop.DoesNotExist:
+            image_path = no_image_path
+        except ShopImage.DoesNotExist:
+            image_path = no_image_path
+
+        return HttpResponse(File(open(image_path, 'rb')), content_type="image/png")
 
     def destroy(self, request, pk=None):
         shop_image = get_object_or_404(ShopImage, pk=pk)

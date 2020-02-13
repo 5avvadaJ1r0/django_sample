@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -22,7 +24,7 @@ from django.views.static import serve
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.TopPageView.as_view(), name='index'),
     path('auths/', include('auths.urls', namespace='auths')),
     path('shops/', include('shops.urls', namespace='shops')),
     path('admin/', admin.site.urls),

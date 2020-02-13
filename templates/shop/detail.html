@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1 class="text-center ">店舗詳細</h1>
-<p class="text-right"><a href="{% url 'shop:update' shop.id %}">店舗編集</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
+<p class="text-right"><a href="{% url 'shop:update' shop.id %}">店舗編集</a> | <a href="{% url 'shop:image_list' shop.id %}">画像一覧</a> | <a href="{% url 'shop:list' %}">店舗一覧</a></p>
 <div class="container mt-3 pt-3">
     <div class="row m-1">
     <div class="col-md-2 offset-md-3">店舗名</div>
@@ -49,5 +49,12 @@
       <div class="col-md-2 offset-md-3">説明</div>
       <div class="col-md-6">{{ shop.description }}</div>
     </div>
+
+    <div class="text-center mt-3 pt-3">
+      <img class="media-object" src="{% url 'shop:image_thumbnail' shop.id %}" width="50%">
+    </div>
+
 </div>
+
+
 {% endblock %}
